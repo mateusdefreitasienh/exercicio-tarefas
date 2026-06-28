@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h1>Tarefas</h1>
+        <ul id="todas-tarefas">
+        </ul>
+    </div>
+    <div>
+        <input type="text" id="input-tarefa" placeholder="Informe a tarefa">
+        <button id="btn-enviar">Cadastrar</button>
+    </div>
+    <div>
+        <input type="text" id="input-buscar-tarefa" placeholder="Informe o indice da tarefa">
+        <button id="btn-buscar-tarefa">Buscar Tarefa</button>
+        <ul id="tarefa-buscada"></ul>
+    </div>
+    <script>
+        const inputTarefa = document.querySelector("#input-tarefa");
+        const btnEnviar = document.querySelector("#btn-enviar");
+        const inputBuscarTarefa = document.querySelector("#input-buscar-tarefa");
+        const btnBuscarTarefa = document.querySelector("#btn-buscar-tarefa");
+        const uLtarefaBuscada = document.querySelector("#tarefa-buscada");
+        const uLTodasTarefas = document.querySelector("#todas-tarefas");
+
+        async function buscarTodasTarefas() {
+            const resposta = await fetch("/tarefas");
+            const respostaJson = await resposta.json();
+
+            uLTodasTarefas.innerHTML = "";
+
+            respostaJson.forEach(tarefa => {
+                const li = document.createElement("li");
+                li.innerHTML = tarefa;
+                uLTodasTarefas.appendChild(li);
+            });
+
+        }
+        window.onload = buscarTodasTarefas();
+
+        btnEnviar.onclick = async () => {
+            const formTarefa = {
+                tarefa: inputTarefa.value
+            };
+
+            const formTarefaJson = JSON.stringify(formTarefa);
+
+            const resposta = await fetch(`/tarefas`, {
+                method: 'post',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: formTarefaJson
+            });
+
+            const respostaJson = await resposta.json();
+
+            respostaJson.success === true && alert("Tarefa cadastrada com sucesso!")
+            respostaJson.success === false && alert(respostaJson.error)
+        };
+
+        btnBuscarTarefa.onclick = async () => {
+            const li = document.createElement("li");
+            uLtarefaBuscada.innerHTML = ""
+
+            const indice = inputBuscarTarefa.value;
+
+            const resposta = await fetch(`/tarefas/${indice}`);
+            const respostaJson = await resposta.json();
+
+            li.innerHTML = respostaJson;
+            uLtarefaBuscada.appendChild(li);
+        };
+
+
+    </script>
+</body>
+</html>
