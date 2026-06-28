@@ -3,22 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sistema de Tarefas</title>
 </head>
+<style>
+    body {
+        background: #e8f4ff;
+        margin: 0px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+    }
+    h1 {
+        font-size: large;
+    }
+    .container{
+        display: flex;
+        height: 100vh;
+    }
+    #div-todas-tarefas {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 20px;
+        border: 1px solid black;
+    }
+    .direita {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .superior,
+    .inferior {
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        border: 1px solid black;
+    }
+    #div-cadastro-tarefas, 
+    #div-busca-tarefa {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    #div-cadastro-tarefas input, 
+    #div-busca-tarefa input {
+        margin: 10px;
+    }
+
+</style>
 <body>
-    <div>
-        <h1>Tarefas</h1>
-        <ul id="todas-tarefas">
-        </ul>
-    </div>
-    <div>
-        <input type="text" id="input-tarefa" placeholder="Informe a tarefa">
-        <button id="btn-enviar">Cadastrar</button>
-    </div>
-    <div>
-        <input type="text" id="input-buscar-tarefa" placeholder="Informe o indice da tarefa">
-        <button id="btn-buscar-tarefa">Buscar Tarefa</button>
-        <ul id="tarefa-buscada"></ul>
+    <div class="container">
+        <div id="div-todas-tarefas">
+            <h1>Tarefas</h1>
+            <ul id="todas-tarefas">
+            </ul>
+        </div>
+        <div class="direita">
+            <div class="superior">
+                <div id="div-cadastro-tarefas">
+                    <input type="text" id="input-tarefa" placeholder="Informe a tarefa">
+                    <button id="btn-enviar">Cadastrar</button>
+                </div>
+            </div>
+
+            <div class="inferior">
+                <div id="div-busca-tarefa">
+                    <input type="text" id="input-buscar-tarefa" placeholder="Informe o indice da tarefa">
+                    <button id="btn-buscar-tarefa">Buscar Tarefa</button>
+                    <ul id="tarefa-buscada"></ul>
+                </div>
+            </div>
+        </div>
+
     </div>
     <script>
         const inputTarefa = document.querySelector("#input-tarefa");
@@ -41,7 +101,7 @@
             });
 
         }
-        window.onload = buscarTodasTarefas();
+        window.onload = buscarTodasTarefas;
 
         btnEnviar.onclick = async () => {
             const formTarefa = {
@@ -60,7 +120,10 @@
 
             const respostaJson = await resposta.json();
 
-            respostaJson.success === true && alert("Tarefa cadastrada com sucesso!")
+            respostaJson.success && alert("Tarefa cadastrada com sucesso!")
+            respostaJson.success && await buscarTodasTarefas();
+            respostaJson.success && (inputTarefa.value = "");
+
             respostaJson.success === false && alert(respostaJson.error)
         };
 
