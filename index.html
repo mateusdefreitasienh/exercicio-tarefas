@@ -91,14 +91,19 @@
         async function buscarTodasTarefas() {
             const resposta = await fetch("/tarefas");
             const respostaJson = await resposta.json();
+            console.log(respostaJson)
 
-            uLTodasTarefas.innerHTML = "";
+            // uLTodasTarefas.innerHTML = "";
 
-            respostaJson.forEach(tarefa => {
-                const li = document.createElement("li");
-                li.innerHTML = tarefa;
-                uLTodasTarefas.appendChild(li);
-            });
+            const tarefasLi = respostaJson.map((tarefa) => `<li>${tarefa}</li>`).join("")
+
+            // respostaJson.forEach(tarefa => {
+            //     const li = document.createElement("li");
+            //     li.innerHTML = tarefa;
+            //     uLTodasTarefas.appendChild(li);
+            // });
+
+            uLTodasTarefas.innerHTML = tarefasLi
 
         }
         window.onload = buscarTodasTarefas;
